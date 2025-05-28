@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+   
     public bool isGameOver;
+
 
     public Text coinText;
     int coins;
@@ -19,5 +21,9 @@ public class GameManager : MonoBehaviour
     {
         coins++;
         coinText.text = coins.ToString();
+    }
+    void Update()
+    {
+       
     }
 }

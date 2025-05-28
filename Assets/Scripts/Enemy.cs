@@ -66,4 +66,14 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+    void OnBecameVisible()
+    {
+        horizontal = 1;
+        
+    }
+    void OnBecameInvisible()
+    {
+        horizontal = 0;
+       
+    }
 }

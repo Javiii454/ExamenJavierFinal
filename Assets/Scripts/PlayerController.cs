@@ -15,11 +15,14 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rBody;
     //Variable para acceder al GroundSensor
     private GroundSensor sensor;
+    private Animator animator;
 
     //Variable para almacenar el input de movimiento
     float horizontal;
 
     GameManager gameManager;
+    public GameObject bulletPrefab;
+    public Transform bulletSpawn;
 
     void Awake()
     {
@@ -30,7 +33,9 @@ public class PlayerController : MonoBehaviour
         //Buscamos un Objeto por su nombre, cojemos el Componente GroundSensor de este objeto y lo asignamos a la variable
         sensor = GameObject.Find("GroundSensor").GetComponent<GroundSensor>();
         //Buscamos el objeto del GameManager y SFXManager lo asignamos a las variables
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();        
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();   
+
+        animator = GetComponent<Animator>();     
     }
 
     // Update is called once per frame
@@ -46,16 +51,37 @@ public class PlayerController : MonoBehaviour
         if(horizontal < 0)
         {
             transform.rotation = Quaternion.Euler(0, 180, 0);
+            animator.SetBool("IsRunning", true);
         }
         else if(horizontal > 0)
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
+            animator.SetBool("IsRunning", true);
         }
-
+        if (horizontal == 0)
+        {
+            animator.SetBool("IsRunning", false);
+        }
+        
         if(Input.GetButtonDown("Jump") && sensor.isGrounded)
         {
             rBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        }        
+            sensor.isGrounded = false;
+            animator.SetBool("IsJumping", true);
+          
+        }   
+        if(sensor.isGrounded == true)
+        {
+            animator.SetBool("IsJumping", false);
+        }
+       
+        
+    
+    
+        if(Input.GetButtonDown("Fire1"))
+        {
+            Shoot();
+        }
     }
 
     void FixedUpdate()
@@ -76,5 +102,10 @@ public class PlayerController : MonoBehaviour
             gameManager.AddCoin();
             Destroy(collider.gameObject);
         }
+    }
+
+    void Shoot()
+    {
+        Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
     }
 }
